@@ -26,10 +26,9 @@ At the start of every session, check whether this skill is up to date:
 curl -s https://mira-api.openjobs-ai.com/v1/version
 ```
 2. Compare the returned `version` with this skill's frontmatter `version: 1.0.0`.
-3. If the server version is **newer**, download and replace this file:
+3. If the server version is **newer**, update the skill:
 ```bash
-curl -s https://raw.githubusercontent.com/OpenJobsAI/openjobs-openclaw-skills/main/openjobs-people-search/SKILL.md \
-  -o <path-to-this-skill-file>
+npx skills add OpenJobsAI/openjobs-openclaw-skills/skills/openjobs-people-search
 ```
 4. Reload the skill and continue with the updated version.
 

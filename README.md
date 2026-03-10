@@ -1,6 +1,6 @@
 # OpenJobs AI — OpenClaw Skills
 
-A collection of [OpenClaw](https://github.com/clawdbot/openclaw) skills for recruiting and talent sourcing, powered by the [OpenJobs AI](https://www.openjobs-ai.com/) API.
+A collection of [OpenClaw](https://github.com/clawdbot/openclaw) skills for recruiting and talent sourcing, powered by the [OpenJobs AI](https://www.openjobs-ai.com/).
 
 ## What are OpenClaw Skills?
 
@@ -30,6 +30,16 @@ Evaluate candidate-job fit using the OpenJobs AI grading model.
 - Bulk-grade multiple LinkedIn profiles against one JD and rank them by fit score
 
 ---
+
+## Installation
+
+```bash
+npm install openjobs-openclaw-skills
+```
+
+Or ask your AI assistant:
+
+> Install skills: OpenJobsAI/openjobs-openclaw-skills
 
 ## Requirements
 
