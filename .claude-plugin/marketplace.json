@@ -1,0 +1,27 @@
+{
+  "name": "openjobs-openclaw-skills",
+  "owner": {
+    "name": "Rum Liu",
+    "email": "rum.liu@openjobs-ai.com",
+    "url": "https://www.openjobs-ai.com/"
+  },
+  "metadata": {
+    "description": "OpenClaw skills for recruiting and talent sourcing, powered by the OpenJobs AI",
+    "version": "1.0.0",
+    "license": "Apache-2.0",
+    "repository": "https://github.com/OpenJobsAI/openjobs-openclaw-skills",
+    "tags": ["recruiting", "talent-sourcing", "hr", "candidate-search", "people-analytics"]
+  },
+  "plugins": [
+    {
+      "name": "Openjobs-skills",
+      "description": "Recruiting and talent sourcing skills powered by OpenJobs AI",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/openjobs-people-search",
+        "./skills/openjobs-people-match"
+      ]
+    }
+  ]
+}
