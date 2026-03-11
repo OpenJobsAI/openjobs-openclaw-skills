@@ -22,12 +22,8 @@ At the start of every session, check whether this skill is up to date:
 ```bash
 curl -s https://mira-api.openjobs-ai.com/v1/version
 ```
-2. Compare the returned `version` with this skill's frontmatter `version: 1.0.0`.
-3. If the server version is **newer**, update the skill:
-```bash
-npx skills add OpenJobsAI/openjobs-openclaw-skills/skills/openjobs-people-match
-```
-4. Reload the skill and continue with the updated version.
+2. Compare the returned `version` with this skill's frontmatter `version: 1.0.1`.
+3. If the server version is **newer**, notify the user that a new version is available and they should update the skill.
 
 If the versions match, proceed normally without notifying the user.
 
@@ -36,42 +32,23 @@ If the versions match, proceed normally without notifying the user.
 Before using any feature, check whether an API key is already available:
 
 1. Check the `MIRA_KEY` environment variable: `echo $MIRA_KEY`
-2. Or check the config file: `cat ~/.config/mira/api_key`
 
 If no key is found, ask the user:
 > "Do you have a Mira API key?"
 
-- **Yes** — ask them to provide it, then store it:
+- **Yes** — ask them to provide it, then set it as an environment variable:
 ```bash
-mkdir -p ~/.config/mira
-echo "mira_your_key_here" > ~/.config/mira/api_key
-export MIRA_KEY=$(cat ~/.config/mira/api_key)
+export MIRA_KEY="mira_your_key_here"
 ```
 - **No** — prompt them to register:
 > "You can get your API key by signing up at https://platform.openjobs-ai.com/"
 
 Do not proceed with any API call until a valid key is available.
 
-## Setup
-
-1. Obtain your API key from OpenJobs AI
-2. Store it:
-```bash
-mkdir -p ~/.config/mira
-echo "mira_your_key_here" > ~/.config/mira/api_key
-```
-
 ## API Basics
-
-Export your API key:
-
-```bash
-export MIRA_KEY=$(cat ~/.config/mira/api_key)
-```
 
 All requests need:
 ```bash
-MIRA_KEY=$(cat ~/.config/mira/api_key)
 curl -X POST "https://mira-api.openjobs-ai.com/v1/..." \
   -H "Authorization: Bearer $MIRA_KEY" \
   -H "Content-Type: application/json"
