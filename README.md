@@ -8,9 +8,9 @@ OpenClaw skills are Markdown-based instruction files that extend AI assistants (
 
 ## Skills
 
-### 🔍 [openjobs-people-search](./openjobs-people-search/SKILL.md)
+### 🔍 [openjobs-people-search](./skills/openjobs-people-search/SKILL.md)
 
-Search, discover, and retrieve professional candidate profiles from the OpenJobs AI database.
+Search, discover, and retrieve professional candidate profiles using OpenJobs AI. Supports structured search, profile lookup, candidate comparison, talent analytics, and contact info unlock.
 
 **Capabilities:**
 - Search candidates using structured filters (skills, location, experience, industry, etc.)
@@ -21,25 +21,52 @@ Search, discover, and retrieve professional candidate profiles from the OpenJobs
 
 ---
 
-### 🎯 [openjobs-people-match](./openjobs-people-match/SKILL.md)
+### 🎯 [openjobs-people-match](./skills/openjobs-people-match/SKILL.md)
 
-Evaluate candidate-job fit using the OpenJobs AI grading model.
+Evaluate candidate-job fit using OpenJobs AI. Grade a single CV against a job description or bulk-grade multiple candidates and rank them by match score.
 
 **Capabilities:**
 - Score a single candidate CV against a job description (0–100 rating)
-- Bulk-grade multiple LinkedIn profiles against one JD and rank them by fit score
+- Bulk-grade up to 20 LinkedIn profiles against one JD and rank by fit score
 
 ---
 
 ## Installation
 
+### Recommended: npx skills (multi-agent client friendly)
+
+Install all skills at once:
+
 ```bash
-npm install openjobs-openclaw-skills
+npx skills install OpenJobsAI/openjobs-openclaw-skills
 ```
 
-Or ask your AI assistant:
+### Claude Code
 
-> Install skills: OpenJobsAI/openjobs-openclaw-skills
+Via terminal:
+
+```bash
+claude plugin marketplace add OpenJobsAI/openjobs-openclaw-skills
+```
+
+Or inside Claude Code:
+
+```
+/plugin marketplace add OpenJobsAI/openjobs-openclaw-skills
+```
+
+### ClawhHub
+
+```bash
+clawhub install openjobs-people-match
+clawhub install openjobs-people-search
+```
+
+Or just tell OpenClaw directly:
+
+> "Install skills: OpenJobsAI/openjobs-openclaw-skills"
+
+![OpenClaw install example](./assets/openclaw-install-example.jpeg)
 
 ## Requirements
 
