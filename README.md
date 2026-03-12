@@ -1,6 +1,6 @@
 # OpenJobs AI — OpenClaw Skills
 
-A collection of [OpenClaw](https://github.com/clawdbot/openclaw) skills for recruiting and talent sourcing, powered by the [OpenJobs AI](https://www.openjobs-ai.com/).
+A collection of [OpenClaw](https://github.com/clawdbot/openclaw) skills for recruiting, talent sourcing, and academic research, powered by [OpenJobs AI](https://www.openjobs-ai.com/).
 
 ## What are OpenClaw Skills?
 
@@ -31,6 +31,29 @@ Evaluate candidate-job fit using OpenJobs AI. Grade a single CV against a job de
 
 ---
 
+### 💼 [openjobs-jobs-search](./skills/openjobs-jobs-search/SKILL.md)
+
+Search and discover job positions from the OpenJobs AI job database. Find jobs by title, company, location, seniority, industry, and more with structured filters.
+
+**Capabilities:**
+- Search jobs using structured filters (title, company, location, seniority, employment type, etc.)
+- Filter by industry, job function, and description keywords
+- Find positions posted within a specific date range
+
+---
+
+### 🎓 [openjobs-ai-talent-search](./skills/openjobs-ai-talent-search/SKILL.md)
+
+Search and discover academic scholars and researchers from the OpenJobs AI scholar database. Find researchers by affiliation, research areas, citations, h-index, publications, and more.
+
+**Capabilities:**
+- Search scholars by research areas, skills, and academic metrics (h-index, citations)
+- Filter by affiliation, position type, and location
+- Find researchers by publication record (article title, journal/conference)
+- Filter by education background (university, major, degree level)
+
+---
+
 ## Installation
 
 ### Recommended: npx skills (multi-agent client friendly)
@@ -58,8 +81,10 @@ Or inside Claude Code:
 ### ClawhHub
 
 ```bash
-clawhub install openjobs-people-match
 clawhub install openjobs-people-search
+clawhub install openjobs-people-match
+clawhub install openjobs-jobs-search
+clawhub install openjobs-ai-talent-search
 ```
 
 Or just tell OpenClaw directly:
