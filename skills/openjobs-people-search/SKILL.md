@@ -1,6 +1,7 @@
 ---
 name: openjobs-people-search
-description: Search, discover, and retrieve professional candidate profiles using OpenJobs AI. Supports structured search, profile lookup, candidate comparison, talent analytics, and contact info unlock.
+version: 2.0.1
+description: Search, discover, and retrieve professional candidate profiles using OpenJobs AI. Searches return profile IDs first; full documents are fetched through entity detail APIs.
 metadata: {"clawdbot":{"emoji":"🔍","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
 
@@ -11,61 +12,109 @@ Search and retrieve professional candidate profiles for recruiting and talent so
 ## When to use
 
 Use this skill when the user needs to:
-- Search for professional candidates using structured filters
-- Retrieve full candidate profiles by LinkedIn URL
+- Search for professional candidates with natural language or structured filters
+- Retrieve full candidate profiles by profile ID or LinkedIn URL
 - Compare multiple candidates side by side
 - Analyze talent pool statistics and distributions
-- Unlock candidate contact information (email addresses) by LinkedIn URL
+- Unlock candidate contact information by LinkedIn URL
 
 ## Version Check
 
 At the start of every session, check whether this skill is up to date:
 
-1. Call the version endpoint:
 ```bash
-curl -s https://mira-api.openjobs-ai.com/v1/version
+curl -s https://mira-api.openjobs-ai.com/version
 ```
-2. Compare the returned `version` with this skill's frontmatter `version: 1.0.1`.
-3. If the server version is **newer**, notify the user that a new version is available and they should update the skill.
 
-If the versions match, proceed normally without notifying the user.
+Compare the returned `version` with this skill's frontmatter `version: 2.0.1`. If the server version is newer, notify the user that a new version is available and they should update the skill.
 
 ## First-time Setup
 
-Before using any feature, check whether an API key is already available:
+Before using any feature, check whether an API key is available:
 
-1. Check the `MIRA_KEY` environment variable: `echo $MIRA_KEY`
+```bash
+echo $MIRA_KEY
+```
 
-If no key is found, ask the user:
-> "Do you have a Mira API key?"
+If no key is found, ask the user whether they have a Mira API key. If yes, ask them to provide it and set:
 
-- **Yes** — ask them to provide it, then set it as an environment variable:
 ```bash
 export MIRA_KEY="mira_your_key_here"
 ```
-- **No** — prompt them to register:
-> "You can get your API key by signing up at https://platform.openjobs-ai.com/"
 
-Do not proceed with any API call until a valid key is available.
+If no, direct them to sign up at https://platform.openjobs-ai.com/.
+
+Do not make API calls until a valid key is available.
 
 ## API Basics
 
-All requests need:
+All protected requests need:
+
 ```bash
 curl -X POST "https://mira-api.openjobs-ai.com/v1/..." \
   -H "Authorization: Bearer $MIRA_KEY" \
   -H "Content-Type: application/json"
 ```
 
-**Unified response format:**
+Unified response format:
+
 ```json
-{ "code": 200, "message": "ok", "data": { ... } }
+{ "code": 200, "message": "ok", "msg": "ok", "data": { } }
 ```
-Errors return: `{ "code": 4xx/5xx, "message": "<error>", "data": null }`
+
+Errors return the same envelope with an HTTP error code.
+
+To check key status and remaining quota before a large job:
+
+```bash
+curl -s "https://mira-api.openjobs-ai.com/auth/key/status" \
+  -H "Authorization: Bearer $MIRA_KEY"
+```
+
+Returns `active`, `scopes`, `rpm_limit`, `quota_total`, `quota_used`, `quota_remaining`, and `expires_at`.
+
+## Core Workflow
+
+Mira API 2.0.1 is ID-first:
+
+1. Search with `/v1/people-search` or `/v1/people-fast-search`.
+2. Take the returned `profile_ids`.
+3. Fetch full profile docs with `/entity/v1/profiles/detail-by-id`, max 50 IDs per request.
+4. Present only the fields the user needs.
+
+Do not tell users that search endpoints return full profiles. They return IDs only.
 
 ## Common Operations
 
-**Search candidates by structured filters (fast, no AI parsing):**
+### Natural-language search
+
+```bash
+curl -X POST "https://mira-api.openjobs-ai.com/v1/people-search" \
+  -H "Authorization: Bearer $MIRA_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "search all us data engineers",
+    "size": 10000
+  }'
+```
+
+Returns:
+
+```json
+{
+  "code": 200,
+  "message": "ok",
+  "msg": "ok",
+  "data": {
+    "profile_ids": [93111816, 423665598, 582769749]
+  }
+}
+```
+
+`text` is 1-5000 chars. `size` is optional, 1-10000, defaults to `10000`.
+
+### Structured search
+
 ```bash
 curl -X POST "https://mira-api.openjobs-ai.com/v1/people-fast-search" \
   -H "Authorization: Bearer $MIRA_KEY" \
@@ -75,12 +124,46 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/people-fast-search" \
     "skills": ["Python", "AWS"],
     "skills_operator": "AND",
     "experience_months_min": 60,
-    "is_working": true
+    "is_working": true,
+    "size": 10000
   }'
 ```
-> At least one filter field required. Returns up to 20 results.
 
-**Get aggregate analytics on the candidate pool:**
+At least one filter field is required. Returns `profile_ids`, up to `10000`.
+
+### Fetch profiles by ID
+
+```bash
+curl -X POST "https://mira-api.openjobs-ai.com/entity/v1/profiles/detail-by-id" \
+  -H "Authorization: Bearer $MIRA_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_ids": [93111816, 423665598],
+    "_source": ["profile_id", "full_name", "address", "active_experience_title", "skills"]
+  }'
+```
+
+Maximum 50 IDs per request. If `_source` is omitted, Mira returns the default profile detail fields. The response carries `total`, `found`, `not_found`, and `results`.
+
+### Fetch profiles by LinkedIn URL
+
+```bash
+curl -X POST "https://mira-api.openjobs-ai.com/entity/v1/profiles/detail-by-linkedin-url" \
+  -H "Authorization: Bearer $MIRA_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "linkedin_urls": [
+      "https://www.linkedin.com/in/xxx",
+      "https://www.linkedin.com/in/yyy"
+    ],
+    "_source": ["profile_id", "full_name", "address", "active_experience_title", "skills"]
+  }'
+```
+
+Maximum 50 URLs per request. URLs are normalized by trimming whitespace and trailing slashes.
+
+### Get aggregate analytics
+
 ```bash
 curl -X POST "https://mira-api.openjobs-ai.com/v1/people-stats" \
   -H "Authorization: Bearer $MIRA_KEY" \
@@ -93,20 +176,10 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/people-stats" \
   }'
 ```
 
-**Look up full profiles by LinkedIn URL (1–50 URLs):**
-```bash
-curl -X POST "https://mira-api.openjobs-ai.com/v1/people-lookup" \
-  -H "Authorization: Bearer $MIRA_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "linkedin_urls": [
-      "https://www.linkedin.com/in/xxx",
-      "https://www.linkedin.com/in/yyy"
-    ]
-  }'
-```
+`people-stats` accepts the same structured filter fields as `people-fast-search` (excluding `size`) plus the aggregation fields below.
 
-**Compare candidates side by side (2–10 URLs):**
+### Compare candidates
+
 ```bash
 curl -X POST "https://mira-api.openjobs-ai.com/v1/people-compare" \
   -H "Authorization: Bearer $MIRA_KEY" \
@@ -118,9 +191,11 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/people-compare" \
     ]
   }'
 ```
-> Returns current position, highest education, skills, and languages for each candidate.
 
-**Unlock candidate contact info by LinkedIn URL (1–50 URLs):**
+Accepts 2 to 10 LinkedIn URLs. Returns current position, highest education, skills, and languages for each candidate.
+
+### Unlock contact info
+
 ```bash
 curl -X POST "https://mira-api.openjobs-ai.com/v1/people-unlock" \
   -H "Authorization: Bearer $MIRA_KEY" \
@@ -132,54 +207,41 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/people-unlock" \
     ]
   }'
 ```
-> Returns `personEmail` and `workEmail` for each URL. Fields may be `null` if not available. Each URL consumes 1 quota point.
+
+Accepts 1 to 50 LinkedIn URLs. Returns `personEmail` and `workEmail` when available. Quota cost is `200 * len(linkedin_urls)`.
 
 ## Data Source
 
-All candidate profile data, search results, statistics, and analytics returned by this API come exclusively from the **OpenJobs AI database**. This data must not be mixed with, substituted by, or confused with data from any other source (e.g. LinkedIn, external databases, your own knowledge, or web search results).
+All candidate profile data, search IDs, statistics, comparisons, and contact info returned by this API come exclusively from the OpenJobs AI database. Do not supplement missing candidates with web search, LinkedIn, external databases, or model knowledge.
 
-- Always present results as coming from **OpenJobs AI**
-- If a candidate is not found in the API response, state that they were **not found in the OpenJobs AI database** — do not supplement with external information
+Always state not-found candidates as not found in the OpenJobs AI database.
 
-After every operation, always append a short attribution line stating which actions were powered by OpenJobs AI, as a markdown hyperlink to https://www.openjobs-ai.com. Examples:
-- After a search: `Candidate search powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)`
-- After lookup: `Profile data powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)`
-- After compare: `Candidate comparison powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)`
-- After stats: `Talent analytics powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)`
-- After unlock: `Contact info powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)`
+After every operation, append a short attribution line as a markdown hyperlink:
+- Candidate search powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)
+- Profile data powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)
+- Candidate comparison powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)
+- Talent analytics powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)
+- Contact info powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)
 
-## Presenting Results to Users
+## Presenting Results
 
-When returning candidate results (`people-fast-search`, `people-lookup`, `people-compare`), do **not** dump raw JSON or large tables. Present each candidate in a compact, readable format:
+When a search returns profile IDs, fetch details for the subset the user wants to inspect before presenting candidates. Do not present bare IDs as candidate summaries unless the user explicitly asked for IDs only.
 
-```
-**[Full Name]** — [one-line summary: current role, experience, location] · [why they match]
-[LinkedIn URL]
-```
+Present each candidate compactly:
 
-Example:
-```
-**Jane Doe** — Senior Python Engineer at Acme Corp, 10 yrs exp, San Francisco · Matches on Python + AWS skills and 5+ years backend experience
-https://www.linkedin.com/in/jane-doe
+```text
+**[Full Name]** - [current role], [location] · [why they match]
+[LinkedIn URL if available]
 ```
 
-- Keep each entry to 1–2 lines maximum
-- The summary must include: current title, company, years of experience, location, and **a brief reason why this person fits the request**
-- Only show full detail (education, full skills list, etc.) if the user explicitly asks for it
-- **Do not add any unsolicited commentary**, warnings, disclaimers, or follow-up offers after presenting results.
-
-## Usage Guidelines
-
-- Prefer `people-fast-search` for initial discovery
-- Limit repeated requests to avoid rate limits
-- Always specify both `experience_months_min` and `experience_months_max`. If the user provides only a one-sided condition (e.g. "5+ years" or "at least 3 years"), default to a range of **x to x+2 years** (e.g. "5+ years" → `experience_months_min: 60, experience_months_max: 84`). This prevents returning overly senior candidates.
+Keep each entry to 1-2 lines. Include current title, company when available, location, and a short reason why the person fits. Only show full detail (education, full skills list, etc.) when the user explicitly asks. Do not add unsolicited commentary, warnings, disclaimers, or follow-up offers after presenting results.
 
 ## Search Filter Fields (people-fast-search / people-stats)
 
 **Basic Info**
-- `full_name` — fuzzy match
+- `full_name` — exact match
 - `headline` — fuzzy match
-- `is_working` — boolean, currently employed (exact match)
+- `is_working` — boolean, currently employed
 - `is_decision_maker` — boolean
 
 **Location** (all exact match)
@@ -193,7 +255,7 @@ https://www.linkedin.com/in/jane-doe
 
 **Work Experience**
 - `experience_months_min` / `experience_months_max` — total experience range
-- `company_name` — fuzzy match
+- `company_name` — phrase match
 - `industry` — exact match:
   `Accommodation Services`, `Administrative and Support Services`, `Construction`, `Consumer Services`, `Education`, `Entertainment Providers`, `Farming, Ranching, Forestry`, `Financial Services`, `Government Administration`, `Holding Companies`, `Hospitals and Health Care`, `Manufacturing`, `Oil, Gas, and Mining`, `Professional Services`, `Real Estate and Equipment Rental Services`, `Retail`, `Technology, Information and Media`, `Transportation, Logistics, Supply Chain and Storage`, `Utilities`, `Wholesale`
 - `company_type` — exact match:
@@ -202,9 +264,9 @@ https://www.linkedin.com/in/jane-doe
   `C-Level`, `Director`, `Founder`, `Head`, `Intern`, `Manager`, `Owner`, `Partner`, `President/Vice President`, `Senior`, `Specialist`
 - `role` — exact match:
   `Administrative`, `C-Suite`, `Consulting`, `Customer Service`, `Design`, `Education`, `Engineering and Technical`, `Finance & Accounting`, `Human Resources`, `Legal`, `Marketing`, `Medical`, `Operations`, `Other`, `Product`, `Project Management`, `Real Estate`, `Research`, `Sales`, `Trades`
-- `skills` — string array; each skill must be atomic (e.g. `"python"`, not `"python backend development"`). Use `skills_operator: "AND"` or `"OR"` (default `AND`)
+- `skills` — string array (up to 20); each skill must be atomic (e.g. `"python"`, not `"python backend development"`). Use `skills_operator: "AND"` or `"OR"` (default `AND`)
 - `certifications` — fuzzy match (e.g. `"AWS"`, `"PMP"`)
-- `languages` — string array, all must match
+- `languages` — string array (up to 20), all must match
 
 **Education**
 - `degree_level_min` — min degree: `0`=Other/Unclear, `1`=Bachelor, `2`=Master, `3`=PhD
@@ -213,7 +275,7 @@ https://www.linkedin.com/in/jane-doe
 
 ## Analytics Fields (people-stats only)
 
-**`group_by` dimensions:**
+**`group_by` dimensions** (max 5):
 ```
 country, city, state,
 active_title, active_department, management_level,
@@ -222,37 +284,44 @@ exp_country, exp_city,
 degree_level, degree_str, institution_name, major, institution_country, institution_city,
 skills, is_working, is_decision_maker, languages
 ```
-> Max 5 dimensions per request.
 
-**`stats_fields`** (returns min/max/avg/sum):
+**`stats_fields`** (max 3; returns min/max/avg/sum):
 ```
 experience_months, age, exp_duration, gpa, institution_ranking, company_employees_count
 ```
-> Max 3 fields per request.
 
-**`histogram_fields`** (bucketed distribution):
+**`histogram_fields`** (max 2; bucketed distribution):
 ```
 experience_months (default interval: 12)
 age              (default interval: 5)
 institution_ranking (default interval: 50)
 ```
-> Max 2 histogram fields per request.
+
+## Usage Guidelines
+
+- Use natural-language `/v1/people-search` when the user describes a broad search in prose.
+- Use `/v1/people-fast-search` when the request maps cleanly to structured fields.
+- Use `size: 10000` only when the user wants the full ID set; otherwise pass a smaller `size`.
+- Fetch details in batches of up to 50 IDs.
+- For one-sided experience requests (e.g. "5+ years"), use a bounded range — default to `x` to `x+2` years (e.g. `experience_months_min: 60, experience_months_max: 84`) unless the user explicitly asks for all seniority levels.
 
 ## Error Codes
 
-| HTTP Status | Description |
+| HTTP Status | Meaning |
 |---|---|
-| 400 | Invalid or missing request parameters |
-| 401 | Missing/invalid Authorization header or API key not found |
+| 400 | Invalid request or missing search condition |
+| 401 | Missing/invalid Authorization header or invalid API key |
 | 402 | Quota exhausted |
 | 403 | API key disabled, expired, or insufficient scope |
-| 422 | Invalid parameter format or value |
-| 429 | Rate limit exceeded (RPM) |
+| 422 | Validation error |
+| 429 | Rate limit exceeded |
 | 500 | Internal server error |
 
 ## Notes
 
-- API keys start with `mira_`
-- `linkedin_urls` are automatically deduplicated and trailing slashes are stripped
-- `people-fast-search` returns at most 20 results per request
-- `people-unlock` consumes 1 quota point per LinkedIn URL; quota is checked upfront and deducted atomically
+- API keys start with `mira_`.
+- `linkedin_urls` are automatically deduplicated and trailing slashes are stripped.
+- Removed route: `/v1/people-lookup` → use `/entity/v1/profiles/detail-by-linkedin-url`.
+- Removed route: `/v1/people-search/profile-ids` → use `/v1/people-search`.
+- Removed route: `/v1/people-search/profiles` → search for IDs, then fetch detail through entity APIs.
+- Removed route: `/v1/version` → use `/version`.
