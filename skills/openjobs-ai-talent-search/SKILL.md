@@ -1,5 +1,6 @@
 ---
 name: openjobs-ai-talent-search
+version: 2.0.1
 description: Search and discover academic scholars using OpenJobs AI. Find researchers by name, affiliation, research areas, citations, h-index, publications, and more with structured filters.
 metadata: {"clawdbot":{"emoji":"🎓","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
@@ -20,14 +21,11 @@ Use this skill when the user needs to:
 
 At the start of every session, check whether this skill is up to date:
 
-1. Call the version endpoint:
 ```bash
-curl -s https://mira-api.openjobs-ai.com/v1/version
+curl -s https://mira-api.openjobs-ai.com/version
 ```
-2. Compare the returned `version` with this skill's frontmatter `version: 1.0.1`.
-3. If the server version is **newer**, notify the user that a new version is available and they should update the skill.
 
-If the versions match, proceed normally without notifying the user.
+Compare the returned `version` with this skill's frontmatter `version: 2.0.1`. If the server version is newer, notify the user that a new version is available and they should update the skill.
 
 ## First-time Setup
 
@@ -208,3 +206,4 @@ Citations: 15,200 · h-index: 42 · Areas: Machine Learning, NLP, Deep Learning
 - `scholar-fast-search` returns at most 20 results per request
 - Sensitive fields (email, phone, internal IDs) are excluded from the response
 - At least one search condition is required — empty queries are rejected to protect the database
+- Removed route: `/v1/version` → use `/version`

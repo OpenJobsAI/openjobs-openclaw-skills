@@ -6,11 +6,11 @@
     "url": "https://www.openjobs-ai.com/"
   },
   "metadata": {
-    "description": "OpenClaw skills for recruiting and talent sourcing, powered by the OpenJobs AI",
-    "version": "1.0.0",
+    "description": "OpenClaw skills for recruiting, talent sourcing, and academic research, powered by the OpenJobs AI",
+    "version": "2.0.1",
     "license": "Apache-2.0",
     "repository": "https://github.com/OpenJobsAI/openjobs-openclaw-skills",
-    "tags": ["recruiting", "talent-sourcing", "hr", "candidate-search", "people-analytics"]
+    "tags": ["recruiting", "talent-sourcing", "hr", "candidate-search", "people-analytics", "job-search", "scholar-search"]
   },
   "plugins": [
     {
@@ -20,7 +20,9 @@
       "strict": false,
       "skills": [
         "./skills/openjobs-people-search",
-        "./skills/openjobs-people-match"
+        "./skills/openjobs-people-match",
+        "./skills/openjobs-jobs-search",
+        "./skills/openjobs-ai-talent-search"
       ]
     }
   ]

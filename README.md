@@ -2,9 +2,20 @@
 
 A collection of [OpenClaw](https://github.com/clawdbot/openclaw) skills for recruiting, talent sourcing, and academic research, powered by [OpenJobs AI](https://www.openjobs-ai.com/).
 
+Built for **Mira API `2.0.1`** (base URL `https://mira-api.openjobs-ai.com`).
+
 ## What are OpenClaw Skills?
 
 OpenClaw skills are Markdown-based instruction files that extend AI assistants (like Claude) with domain-specific capabilities. Each skill teaches the AI how to interact with a specific API or workflow.
+
+## ID-first search model
+
+Mira API `2.0.1` is **ID-first**. People and job search endpoints return IDs only (up to `10000`), and full documents are fetched separately through entity detail APIs (up to `50` IDs/URLs per request):
+
+1. Search → `POST /v1/people-search`, `POST /v1/people-fast-search`, or `POST /v1/job-fast-search` → returns `profile_ids` / `job_ids`.
+2. Fetch details → `POST /entity/v1/profiles/detail-by-id`, `POST /entity/v1/profiles/detail-by-linkedin-url`, or `POST /entity/v1/jobs/detail-by-id`.
+
+Scholar search (`POST /v1/scholar-fast-search`) still returns documents directly (up to `20`).
 
 ## Skills
 
@@ -13,9 +24,9 @@ OpenClaw skills are Markdown-based instruction files that extend AI assistants (
 Search, discover, and retrieve professional candidate profiles using OpenJobs AI. Supports structured search, profile lookup, candidate comparison, talent analytics, and contact info unlock.
 
 **Capabilities:**
-- Search candidates using structured filters (skills, location, experience, industry, etc.)
-- Look up full profiles by LinkedIn URL (up to 50 at once)
-- Compare multiple candidates side by side
+- Natural-language and structured search returning profile IDs (skills, location, experience, industry, etc.)
+- Fetch full profiles by profile ID or LinkedIn URL via entity detail APIs (up to 50 per request)
+- Compare multiple candidates side by side (2–10 URLs)
 - Analyze talent pool statistics and distributions
 - Unlock candidate contact information (email addresses)
 
@@ -92,6 +103,29 @@ Or just tell OpenClaw directly:
 > "Install skills: OpenJobsAI/openjobs-openclaw-skills"
 
 ![OpenClaw install example](./assets/openclaw-install-example.jpeg)
+
+## MCP (alternative to skills)
+
+Mira API also exposes the same capabilities over MCP, so agents can call the tools directly instead of running curl from these skills:
+
+| Transport | URL | Protocol |
+|---|---|---|
+| Streamable HTTP (recommended) | `https://mira-api.openjobs-ai.com/mcp` | MCP 2025-03-26 |
+| SSE (legacy) | `https://mira-api.openjobs-ai.com/sse` | MCP 2024-11-05 |
+
+Forward the same `Authorization: Bearer mira_...` header. Claude Desktop config:
+
+```json
+{
+  "mcpServers": {
+    "mira-api": {
+      "type": "http",
+      "url": "https://mira-api.openjobs-ai.com/mcp",
+      "headers": { "Authorization": "Bearer mira_xxxxxxxxxxxx" }
+    }
+  }
+}
+```
 
 ## Requirements
 
