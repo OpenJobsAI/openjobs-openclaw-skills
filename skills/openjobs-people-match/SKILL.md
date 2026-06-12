@@ -1,6 +1,6 @@
 ---
 name: openjobs-people-match
-version: 2.0.1
+version: 2.1.0
 description: Evaluate candidate-job fit using OpenJobs AI. Grade a single CV against a job description or bulk-grade multiple candidates and rank them by match score.
 metadata: {"clawdbot":{"emoji":"🎯","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
@@ -23,7 +23,9 @@ At the start of every session, check whether this skill is up to date:
 curl -s https://mira-api.openjobs-ai.com/version
 ```
 
-Compare the returned `version` with this skill's frontmatter `version: 2.0.1`. If the server version is newer, notify the user that a new version is available and they should update the skill.
+Compare the returned `version` with this skill's frontmatter `version: 2.1.0`. If the server version is newer, stop before making API calls and tell the user this skill should be updated.
+
+If an API response does not match the fields or examples in this skill, re-check `/version`. Treat a newer server version as the signal to update this skill before continuing.
 
 ## First-time Setup
 
@@ -56,7 +58,7 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/..." \
 Unified response format:
 
 ```json
-{ "code": 200, "message": "ok", "msg": "ok", "data": { } }
+{ "code": 200, "msg": "ok", "data": { } }
 ```
 
 Errors return the same envelope with an HTTP error code.
@@ -80,7 +82,6 @@ Both `cv` and `jd` are 1-5000 chars. Response data contains `total_score.rating`
 ```json
 {
   "code": 200,
-  "message": "ok",
   "msg": "ok",
   "data": {
     "total_score": { "rating": 92, "description": "Strong Python and cloud match..." }
@@ -162,4 +163,3 @@ https://www.linkedin.com/in/jane-doe
 - `people-bulk-grade` runs up to 5 concurrent AI grading requests per call.
 - `total_score.rating` is an integer from 0 to 100.
 - `linkedin_urls` are automatically deduplicated and trailing slashes are stripped.
-- Removed route: `/v1/version` → use `/version`.

@@ -1,7 +1,7 @@
 ---
 name: openjobs-people-search
-version: 2.0.1
-description: Search, discover, and retrieve professional candidate profiles using OpenJobs AI. Searches return profile IDs first; full documents are fetched through entity detail APIs.
+version: 2.1.0
+description: Search, discover, and retrieve professional candidate profiles using OpenJobs AI. Searches return string profile IDs first; full documents are fetched through entity detail APIs.
 metadata: {"clawdbot":{"emoji":"🔍","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
 
@@ -13,7 +13,7 @@ Search and retrieve professional candidate profiles for recruiting and talent so
 
 Use this skill when the user needs to:
 - Search for professional candidates with natural language or structured filters
-- Retrieve full candidate profiles by profile ID or LinkedIn URL
+- Retrieve full candidate profiles by string profile ID or LinkedIn URL
 - Compare multiple candidates side by side
 - Analyze talent pool statistics and distributions
 - Unlock candidate contact information by LinkedIn URL
@@ -26,7 +26,9 @@ At the start of every session, check whether this skill is up to date:
 curl -s https://mira-api.openjobs-ai.com/version
 ```
 
-Compare the returned `version` with this skill's frontmatter `version: 2.0.1`. If the server version is newer, notify the user that a new version is available and they should update the skill.
+Compare the returned `version` with this skill's frontmatter `version: 2.1.0`. If the server version is newer, stop before making API calls and tell the user this skill should be updated.
+
+If an API response does not match the fields or examples in this skill, re-check `/version`. Treat a newer server version as the signal to update this skill before continuing.
 
 ## First-time Setup
 
@@ -59,7 +61,7 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/..." \
 Unified response format:
 
 ```json
-{ "code": 200, "message": "ok", "msg": "ok", "data": { } }
+{ "code": 200, "msg": "ok", "data": { } }
 ```
 
 Errors return the same envelope with an HTTP error code.
@@ -75,14 +77,14 @@ Returns `active`, `scopes`, `rpm_limit`, `quota_total`, `quota_used`, `quota_rem
 
 ## Core Workflow
 
-Mira API 2.0.1 is ID-first:
+Mira API 2.1.0 is ID-first:
 
 1. Search with `/v1/people-search` or `/v1/people-fast-search`.
-2. Take the returned `profile_ids`.
+2. Take the returned string type `profile_ids`.
 3. Fetch full profile docs with `/entity/v1/profiles/detail-by-id`, max 50 IDs per request.
 4. Present only the fields the user needs.
 
-Do not tell users that search endpoints return full profiles. They return IDs only.
+Do not tell users that search endpoints return full profiles. They return string type IDs only.
 
 ## Common Operations
 
@@ -94,7 +96,7 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/people-search" \
   -H "Content-Type: application/json" \
   -d '{
     "text": "search all us data engineers",
-    "size": 10000
+    "size": 100
   }'
 ```
 
@@ -103,15 +105,14 @@ Returns:
 ```json
 {
   "code": 200,
-  "message": "ok",
   "msg": "ok",
   "data": {
-    "profile_ids": [93111816, 423665598, 582769749]
+    "profile_ids": ["PavstrIWX_ZuAc2AOAZXHA", "ItGafMDFS3n8phCHDDyvEA"]
   }
 }
 ```
 
-`text` is 1-5000 chars. `size` is optional, 1-10000, defaults to `10000`.
+`text` is 1-5000 chars. `size` is optional, 1-100, defaults to `100`.
 
 ### Structured search
 
@@ -125,11 +126,11 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/people-fast-search" \
     "skills_operator": "AND",
     "experience_months_min": 60,
     "is_working": true,
-    "size": 10000
+    "size": 100
   }'
 ```
 
-At least one filter field is required. Returns `profile_ids`, up to `10000`.
+At least one filter field is required. Returns string type `profile_ids`, up to `100` for public API keys.
 
 ### Fetch profiles by ID
 
@@ -138,12 +139,12 @@ curl -X POST "https://mira-api.openjobs-ai.com/entity/v1/profiles/detail-by-id" 
   -H "Authorization: Bearer $MIRA_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "profile_ids": [93111816, 423665598],
+    "profile_ids": ["PavstrIWX_ZuAc2AOAZXHA", "ItGafMDFS3n8phCHDDyvEA"],
     "_source": ["profile_id", "full_name", "address", "active_experience_title", "skills"]
   }'
 ```
 
-Maximum 50 IDs per request. If `_source` is omitted, Mira returns the default profile detail fields. The response carries `total`, `found`, `not_found`, and `results`.
+Maximum 50 string type IDs per request. If `_source` is omitted, Mira returns the default public profile detail fields. The response carries `total`, `found`, `not_found`, and `results`.
 
 ### Fetch profiles by LinkedIn URL
 
@@ -301,8 +302,8 @@ institution_ranking (default interval: 50)
 
 - Use natural-language `/v1/people-search` when the user describes a broad search in prose.
 - Use `/v1/people-fast-search` when the request maps cleanly to structured fields.
-- Use `size: 10000` only when the user wants the full ID set; otherwise pass a smaller `size`.
-- Fetch details in batches of up to 50 IDs.
+- Use `size: 100` only when the user wants the full string ID set; otherwise pass a smaller `size`.
+- Fetch details in batches of up to 50 string profile IDs.
 - For one-sided experience requests (e.g. "5+ years"), use a bounded range — default to `x` to `x+2` years (e.g. `experience_months_min: 60, experience_months_max: 84`) unless the user explicitly asks for all seniority levels.
 
 ## Error Codes
@@ -321,7 +322,6 @@ institution_ranking (default interval: 50)
 
 - API keys start with `mira_`.
 - `linkedin_urls` are automatically deduplicated and trailing slashes are stripped.
-- Removed route: `/v1/people-lookup` → use `/entity/v1/profiles/detail-by-linkedin-url`.
-- Removed route: `/v1/people-search/profile-ids` → use `/v1/people-search`.
-- Removed route: `/v1/people-search/profiles` → search for IDs, then fetch detail through entity APIs.
-- Removed route: `/v1/version` → use `/version`.
+- Sunset adjustment: `/v1/people-lookup` → use `/entity/v1/profiles/detail-by-linkedin-url`.
+- Sunset adjustment: `/v1/people-search/profile-ids` → use `/v1/people-search`.
+- Sunset adjustment: `/v1/people-search/profiles` → search for IDs, then fetch detail through entity APIs.

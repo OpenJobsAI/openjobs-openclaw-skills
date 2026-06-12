@@ -1,6 +1,6 @@
 ---
 name: openjobs-ai-talent-search
-version: 2.0.1
+version: 2.1.0
 description: Search and discover academic scholars using OpenJobs AI. Find researchers by name, affiliation, research areas, citations, h-index, publications, and more with structured filters.
 metadata: {"clawdbot":{"emoji":"🎓","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
@@ -25,7 +25,9 @@ At the start of every session, check whether this skill is up to date:
 curl -s https://mira-api.openjobs-ai.com/version
 ```
 
-Compare the returned `version` with this skill's frontmatter `version: 2.0.1`. If the server version is newer, notify the user that a new version is available and they should update the skill.
+Compare the returned `version` with this skill's frontmatter `version: 2.1.0`. If the server version is newer, stop before making API calls and tell the user this skill should be updated.
+
+If an API response does not match the fields or examples in this skill, re-check `/version`. Treat a newer server version as the signal to update this skill before continuing.
 
 ## First-time Setup
 
@@ -56,9 +58,9 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/..." \
 
 **Unified response format:**
 ```json
-{ "code": 200, "message": "ok", "data": { ... } }
+{ "code": 200, "msg": "ok", "data": { ... } }
 ```
-Errors return: `{ "code": 4xx/5xx, "message": "<error>", "data": null }`
+Errors return: `{ "code": 4xx/5xx, "msg": "<error>", "data": null }`
 
 ## Common Operations
 
@@ -71,10 +73,11 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/scholar-fast-search" \
     "areas": ["Machine Learning", "Natural Language Processing"],
     "areas_operator": "AND",
     "country": "United States",
-    "h_index_min": 20
+    "h_index_min": 20,
+    "size": 100
   }'
 ```
-> At least one filter field required. Returns up to 20 results.
+> At least one filter field required. Returns up to 100 results for public API keys.
 
 **Search by affiliation and position:**
 ```bash
@@ -152,6 +155,7 @@ Citations: 15,200 · h-index: 42 · Areas: Machine Learning, NLP, Deep Learning
 ## Search Filter Fields (scholar-fast-search)
 
 **Basic Info**
+- `size` — optional max scholar profiles, 1-100, defaults to `100`
 - `full_name` — fuzzy match (max 200 chars)
 - `headline` — fuzzy match (max 200 chars)
 
@@ -203,7 +207,6 @@ Citations: 15,200 · h-index: 42 · Areas: Machine Learning, NLP, Deep Learning
 ## Notes
 
 - API keys start with `mira_`
-- `scholar-fast-search` returns at most 20 results per request
+- `scholar-fast-search` returns at most 100 results per request for public API keys
 - Sensitive fields (email, phone, internal IDs) are excluded from the response
 - At least one search condition is required — empty queries are rejected to protect the database
-- Removed route: `/v1/version` → use `/version`

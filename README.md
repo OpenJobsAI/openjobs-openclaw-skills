@@ -2,7 +2,7 @@
 
 A collection of [OpenClaw](https://github.com/clawdbot/openclaw) skills for recruiting, talent sourcing, and academic research, powered by [OpenJobs AI](https://www.openjobs-ai.com/).
 
-Built for **Mira API `2.0.1`** (base URL `https://mira-api.openjobs-ai.com`).
+Built for **Mira API `2.1.0`** (base URL `https://mira-api.openjobs-ai.com`).
 
 ## What are OpenClaw Skills?
 
@@ -10,12 +10,16 @@ OpenClaw skills are Markdown-based instruction files that extend AI assistants (
 
 ## ID-first search model
 
-Mira API `2.0.1` is **ID-first**. People and job search endpoints return IDs only (up to `10000`), and full documents are fetched separately through entity detail APIs (up to `50` IDs/URLs per request):
+Mira API `2.1.0` is **ID-first**. People and job search endpoints return string type IDs only (up to `100` for public API keys), and full documents are fetched separately through entity detail APIs (up to `50` IDs/URLs per request):
 
 1. Search → `POST /v1/people-search`, `POST /v1/people-fast-search`, or `POST /v1/job-fast-search` → returns `profile_ids` / `job_ids`.
 2. Fetch details → `POST /entity/v1/profiles/detail-by-id`, `POST /entity/v1/profiles/detail-by-linkedin-url`, or `POST /entity/v1/jobs/detail-by-id`.
 
-Scholar search (`POST /v1/scholar-fast-search`) still returns documents directly (up to `20`).
+Scholar search (`POST /v1/scholar-fast-search`) still returns documents directly (up to `100` for public API keys).
+
+## Version guidance
+
+These skills target Mira API `2.1.0`. Agents should call `GET /version` at the start of a session. If the server version is newer than the skill frontmatter, or if responses no longer match the examples in a skill, refresh the installed skills before relying on API calls.
 
 ## Skills
 
@@ -24,8 +28,8 @@ Scholar search (`POST /v1/scholar-fast-search`) still returns documents directly
 Search, discover, and retrieve professional candidate profiles using OpenJobs AI. Supports structured search, profile lookup, candidate comparison, talent analytics, and contact info unlock.
 
 **Capabilities:**
-- Natural-language and structured search returning profile IDs (skills, location, experience, industry, etc.)
-- Fetch full profiles by profile ID or LinkedIn URL via entity detail APIs (up to 50 per request)
+- Natural-language and structured search returning string profile IDs (skills, location, experience, industry, etc.)
+- Fetch full profiles by string profile ID or LinkedIn URL via entity detail APIs (up to 50 per request)
 - Compare multiple candidates side by side (2–10 URLs)
 - Analyze talent pool statistics and distributions
 - Unlock candidate contact information (email addresses)
@@ -47,7 +51,7 @@ Evaluate candidate-job fit using OpenJobs AI. Grade a single CV against a job de
 Search and discover job positions from the OpenJobs AI job database. Find jobs by title, company, location, seniority, industry, and more with structured filters.
 
 **Capabilities:**
-- Search jobs using structured filters (title, company, location, seniority, employment type, etc.)
+- Search jobs using structured filters and string job IDs (title, company, location, seniority, employment type, etc.)
 - Filter by industry, job function, and description keywords
 - Find positions posted within a specific date range
 
