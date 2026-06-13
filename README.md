@@ -21,6 +21,10 @@ Scholar search (`POST /v1/scholar-fast-search`) still returns documents directly
 
 These skills target Mira API `2.1.0`. Agents should call `GET /version` at the start of a session. If the server version is newer than the skill frontmatter, or if responses no longer match the examples in a skill, refresh the installed skills before relying on API calls.
 
+## Public API boundary
+
+These public skills should use only the endpoints documented here. People search, profile detail, analytics, and candidate evaluation must stay on job-relevant fields. Do not search, filter, aggregate, rank, or present candidates by restricted demographic attributes such as age, gender, ethnicity, sex, race, or similar protected classes; use skills, experience, role, industry, location, education, language, and certifications instead.
+
 ## Skills
 
 ### 🔍 [openjobs-people-search](./skills/openjobs-people-search/SKILL.md)

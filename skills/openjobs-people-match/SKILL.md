@@ -139,6 +139,10 @@ https://www.linkedin.com/in/jane-doe
 - Always include the score and a brief match reason.
 - Do not add unsolicited commentary, warnings, or follow-up offers after presenting results.
 
+## Compliance Boundary
+
+Use candidate grading only for job-related fit. Do not rank, compare, score, or explain fit using restricted demographic attributes such as age, gender, ethnicity, sex, race, or similar protected classes. If such criteria appear in a JD or user request, do not use them as grading criteria.
+
 ## Usage Guidelines
 
 - Use `people-bulk-grade` instead of many individual `people-grade` calls when scoring several candidates against the same JD.

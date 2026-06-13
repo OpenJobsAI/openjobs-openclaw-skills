@@ -86,6 +86,12 @@ Mira API 2.1.0 is ID-first:
 
 Do not tell users that search endpoints return full profiles. They return string type IDs only.
 
+## Compliance Boundary
+
+Use only the public endpoints documented in this skill. For candidate/profile flows, do not search, filter, aggregate, compare, or present people by restricted demographic attributes such as age, gender, ethnicity, sex, race, or similar protected classes.
+
+If a user asks for those attributes, decline that part of the request and continue with job-relevant alternatives such as skills, experience_months, role, industry, location, education, language, and certifications. Do not request restricted profile fields in `_source`; public detail responses are intended for job-relevant profile fields only.
+
 ## Common Operations
 
 ### Natural-language search
@@ -173,7 +179,7 @@ curl -X POST "https://mira-api.openjobs-ai.com/v1/people-stats" \
     "country": "United States",
     "group_by": ["management_level"],
     "stats_fields": ["experience_months"],
-    "histogram_fields": [{"field": "age", "interval": 10}]
+    "histogram_fields": [{"field": "experience_months", "interval": 12}]
   }'
 ```
 
@@ -288,13 +294,12 @@ skills, is_working, is_decision_maker, languages
 
 **`stats_fields`** (max 3; returns min/max/avg/sum):
 ```
-experience_months, age, exp_duration, gpa, institution_ranking, company_employees_count
+experience_months, exp_duration, gpa, institution_ranking, company_employees_count
 ```
 
 **`histogram_fields`** (max 2; bucketed distribution):
 ```
-experience_months (default interval: 12)
-age              (default interval: 5)
+experience_months    (default interval: 12)
 institution_ranking (default interval: 50)
 ```
 
@@ -304,6 +309,7 @@ institution_ranking (default interval: 50)
 - Use `/v1/people-fast-search` when the request maps cleanly to structured fields.
 - Use `size: 100` only when the user wants the full string ID set; otherwise pass a smaller `size`.
 - Fetch details in batches of up to 50 string profile IDs.
+- Do not use restricted demographic or protected-class attributes as search, analytics, comparison, or presentation criteria.
 - For one-sided experience requests (e.g. "5+ years"), use a bounded range — default to `x` to `x+2` years (e.g. `experience_months_min: 60, experience_months_max: 84`) unless the user explicitly asks for all seniority levels.
 
 ## Error Codes

@@ -146,6 +146,7 @@ Citations: 15,200 · h-index: 42 · Areas: Machine Learning, NLP, Deep Learning
 
 ## Usage Guidelines
 
+- Do not filter, rank, or present scholars by restricted demographic or protected-class attributes; use academic and job-relevant criteria only.
 - Combine multiple fields for best results (e.g. `areas` + `country` + `h_index_min`)
 - Use `areas` for research topic filtering, `skills` for technical skill filtering
 - Use `article_title` and `article_publication` to find scholars by their publication record
@@ -208,5 +209,5 @@ Citations: 15,200 · h-index: 42 · Areas: Machine Learning, NLP, Deep Learning
 
 - API keys start with `mira_`
 - `scholar-fast-search` returns at most 100 results per request for public API keys
-- Sensitive fields (email, phone, internal IDs) are excluded from the response
+- Sensitive fields (email, phone, non-public identifiers) are excluded from the response
 - At least one search condition is required — empty queries are rejected to protect the database
