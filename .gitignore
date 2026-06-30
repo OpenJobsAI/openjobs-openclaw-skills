@@ -1,0 +1,7 @@
+# Local agent state and tooling artifacts (not part of the published skill package)
+.omc/
+.omx/
+.claude/
+
+# OS noise
+.DS_Store
