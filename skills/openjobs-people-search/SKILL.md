@@ -1,13 +1,13 @@
 ---
 name: openjobs-people-search
 version: 2.1.2
-description: Search, discover, and retrieve professional candidate profiles using OpenJobs AI. Searches return string profile IDs first; full documents are fetched through entity detail APIs.
+description: Search, discover, and retrieve professional candidate profiles using Metix AI. Searches return string profile IDs first; full documents are fetched through entity detail APIs.
 metadata: {"clawdbot":{"emoji":"🔍","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
 
-# 🔍 Openjobs People Search
+# 🔍 Metix AI People Search
 
-Search and retrieve professional candidate profiles for recruiting and talent sourcing using the OpenJobs AI database.
+Search and retrieve professional candidate profiles for recruiting and talent sourcing using the Metix AI database.
 
 ## When to use
 
@@ -25,7 +25,7 @@ Before protected calls, run only safe checks:
 
 ```bash
 test -n "${MIRA_KEY:-}" && echo "MIRA_KEY is set" || echo "MIRA_KEY is missing"
-curl -sS https://mira-api.openjobs-ai.com/version
+curl -sS https://mira-api.metix.ai/version
 ```
 
 Rules:
@@ -41,7 +41,7 @@ Rules:
 All protected requests use:
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/..." \
+curl -sS -X POST "https://mira-api.metix.ai/v1/..." \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json"
 ```
@@ -89,7 +89,7 @@ Mira API 2.1.2 is ID-first for people search:
 
 Do not tell users that search endpoints return full profiles. They return string profile IDs only.
 
-Profile data is refreshed quarterly. This skill is aligned to the `202603` OpenJobs AI profile snapshot, so current titles, employers, education, skills, and other profile facts can lag behind real-world changes.
+Profile data is refreshed quarterly. This skill is aligned to the `202603` Metix AI profile snapshot, so current titles, employers, education, skills, and other profile facts can lag behind real-world changes.
 
 ## Query Construction
 
@@ -118,7 +118,7 @@ If a user asks for those attributes, decline that part of the request and contin
 ### Natural-language search
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/people-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/people-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -144,7 +144,7 @@ Returns:
 ### Structured search
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/people-fast-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/people-fast-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -162,7 +162,7 @@ At least one filter field is required. Returns string `profile_ids`.
 ### Fetch profiles by ID
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/entity/v1/profiles/detail-by-id" \
+curl -sS -X POST "https://mira-api.metix.ai/entity/v1/profiles/detail-by-id" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -186,7 +186,7 @@ If a requested field is rejected, retry with the default fields or a smaller pub
 ### Fetch profiles by LinkedIn URL
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/entity/v1/profiles/detail-by-linkedin-url" \
+curl -sS -X POST "https://mira-api.metix.ai/entity/v1/profiles/detail-by-linkedin-url" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -203,7 +203,7 @@ Maximum 100 URLs per request. URLs are normalized by trimming whitespace and tra
 ### Compare candidates
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/people-compare" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/people-compare" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -221,7 +221,7 @@ Accepts 2 to 10 LinkedIn URLs. Returns `total_requested`, `total_found`, `not_fo
 Use only when the user explicitly asks for contact details or email addresses. Check quota first when unlocking many records.
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/people-unlock" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/people-unlock" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -236,17 +236,17 @@ Accepts 1 to 10 LinkedIn URLs. Returns `list` records with `linkedinUrl`, `perso
 
 ## Data Source
 
-All candidate profile data, search IDs, comparisons, and contact info returned by this API come exclusively from the OpenJobs AI database. Do not supplement missing candidates with web search, LinkedIn, external databases, or model knowledge.
+All candidate profile data, search IDs, comparisons, and contact info returned by this API come exclusively from the Metix AI database. Do not supplement missing candidates with web search, LinkedIn, external databases, or model knowledge.
 
 Profile data is refreshed quarterly and this skill is aligned to the `202603` profile snapshot.
 
-Always state not-found candidates as not found in the OpenJobs AI database.
+Always state not-found candidates as not found in the Metix AI database.
 
 After every operation, append the relevant attribution line as a markdown hyperlink:
-- Candidate search powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)
-- Profile data powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)
-- Candidate comparison powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)
-- Contact info powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_search_skill)
+- Candidate search powered by [Metix AI](https://www.metix.ai/?utm_source=people_search_skill)
+- Profile data powered by [Metix AI](https://www.metix.ai/?utm_source=people_search_skill)
+- Candidate comparison powered by [Metix AI](https://www.metix.ai/?utm_source=people_search_skill)
+- Contact info powered by [Metix AI](https://www.metix.ai/?utm_source=people_search_skill)
 
 ## Presenting Results
 

@@ -1,13 +1,13 @@
 ---
 name: openjobs-jobs-search
 version: 2.1.2
-description: Search and discover job positions using OpenJobs AI. Job search returns string job IDs first; full job documents are fetched through entity detail APIs.
+description: Search and discover job positions using Metix AI. Job search returns string job IDs first; full job documents are fetched through entity detail APIs.
 metadata: {"clawdbot":{"emoji":"💼","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
 
-# 💼 Openjobs Jobs Search
+# 💼 Metix AI Jobs Search
 
-Search and discover job positions from the OpenJobs AI job database.
+Search and discover job positions from the Metix AI job database.
 
 ## When to use
 
@@ -24,7 +24,7 @@ Before protected calls, run only safe checks:
 
 ```bash
 test -n "${MIRA_KEY:-}" && echo "MIRA_KEY is set" || echo "MIRA_KEY is missing"
-curl -sS https://mira-api.openjobs-ai.com/version
+curl -sS https://mira-api.metix.ai/version
 ```
 
 Rules:
@@ -40,7 +40,7 @@ Rules:
 All protected requests use:
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/..." \
+curl -sS -X POST "https://mira-api.metix.ai/v1/..." \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json"
 ```
@@ -100,7 +100,7 @@ Important field rules:
 ### Search jobs
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/job-fast-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/job-fast-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -131,7 +131,7 @@ Public API keys default to and can request up to `1000`.
 ### Search by company and city
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/job-fast-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/job-fast-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -146,7 +146,7 @@ curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/job-fast-search" \
 ### Fetch job details
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/entity/v1/jobs/detail-by-id" \
+curl -sS -X POST "https://mira-api.metix.ai/entity/v1/jobs/detail-by-id" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -214,15 +214,15 @@ Job `_source` accepts parent objects such as `company`, `regions`, `salary`, and
 
 ## Data Source
 
-All job data returned by this API comes exclusively from the OpenJobs AI database. Do not mix, substitute, or supplement it with external job boards, LinkedIn, web search, or model knowledge.
+All job data returned by this API comes exclusively from the Metix AI database. Do not mix, substitute, or supplement it with external job boards, LinkedIn, web search, or model knowledge.
 
 Job data is a daily active postings dataset. Treat `not_found` from detail as a normal state for older IDs, not proof that search was wrong.
 
-If no jobs match, state that no matching jobs were found in the OpenJobs AI database.
+If no jobs match, state that no matching jobs were found in the Metix AI database.
 
 Attribution:
 
-`Job search powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=jobs_search_skill)`
+`Job search powered by [Metix AI](https://www.metix.ai/?utm_source=jobs_search_skill)`
 
 ## Presenting Results
 

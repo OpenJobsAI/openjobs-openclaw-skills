@@ -3,31 +3,31 @@
   "owner": {
     "name": "Rum Liu",
     "email": "rum.liu@openjobs-ai.com",
-    "url": "https://www.openjobs-ai.com/"
+    "url": "https://www.metix.ai/"
   },
   "metadata": {
-    "description": "OpenClaw skills for OpenJobs AI platform workflows, recruiting, talent sourcing, candidate matching, company discovery, job search, and academic researcher discovery",
-    "version": "2.1.2",
-    "license": "Apache-2.0",
-    "repository": "https://github.com/OpenJobsAI/openjobs-openclaw-skills",
-    "tags": [
-      "openjobs-ai",
-      "platform-assistant",
-      "recruiting",
-      "talent-sourcing",
-      "hr",
-      "candidate-search",
-      "candidate-matching",
-      "job-search",
-      "company-search",
-      "ai-talent-search",
-      "scholar-search"
-    ]
+    "description": "OpenClaw skills for Metix AI platform workflows, recruiting, talent sourcing, candidate matching, company discovery, job search, and academic researcher discovery",
+    "version": "2.1.2"
   },
   "plugins": [
     {
-      "name": "Openjobs-skills",
-      "description": "OpenJobs AI platform assistant plus recruiting, sourcing, matching, job, company, and scholar search skills",
+      "name": "metix-skills",
+      "description": "Metix AI platform assistant plus recruiting, sourcing, matching, job, company, and scholar search skills",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/OpenJobsAI/openjobs-openclaw-skills",
+      "tags": [
+        "metix-ai",
+        "platform-assistant",
+        "recruiting",
+        "talent-sourcing",
+        "hr",
+        "candidate-search",
+        "candidate-matching",
+        "job-search",
+        "company-search",
+        "ai-talent-search",
+        "scholar-search"
+      ],
       "source": "./",
       "strict": false,
       "skills": [

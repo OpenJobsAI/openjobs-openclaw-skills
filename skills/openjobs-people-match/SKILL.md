@@ -1,13 +1,13 @@
 ---
 name: openjobs-people-match
 version: 2.1.2
-description: Evaluate candidate-job fit using OpenJobs AI. Grade a single CV against a job description or bulk-grade multiple candidates and rank them by match score.
+description: Evaluate candidate-job fit using Metix AI. Grade a single CV against a job description or bulk-grade multiple candidates and rank them by match score.
 metadata: {"clawdbot":{"emoji":"🎯","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
 
-# 🎯 Openjobs People Match
+# 🎯 Metix AI People Match
 
-Evaluate how well candidates fit a job description using the OpenJobs AI grading model.
+Evaluate how well candidates fit a job description using the Metix AI grading model.
 
 ## When to use
 
@@ -23,7 +23,7 @@ Before protected calls, run only safe checks:
 
 ```bash
 test -n "${MIRA_KEY:-}" && echo "MIRA_KEY is set" || echo "MIRA_KEY is missing"
-curl -sS https://mira-api.openjobs-ai.com/version
+curl -sS https://mira-api.metix.ai/version
 ```
 
 Rules:
@@ -39,7 +39,7 @@ Rules:
 All protected requests use:
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/..." \
+curl -sS -X POST "https://mira-api.metix.ai/v1/..." \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json"
 ```
@@ -76,7 +76,7 @@ Both grading operations are metered, charged only on a billable result, with `40
 ### Grade a CV against a job description
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/people-grade" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/people-grade" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -100,7 +100,7 @@ Both `cv` and `jd` are 1-5000 chars. Response data contains `total_score.rating`
 ### Bulk grade candidates against one JD
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/people-bulk-grade" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/people-bulk-grade" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -112,7 +112,7 @@ curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/people-bulk-grade" \
   }'
 ```
 
-`linkedin_urls` accepts 1 to 20 URLs; `jd` is 10-5000 chars. Each candidate is resolved from the OpenJobs AI database, scored, and returned as ranked results.
+`linkedin_urls` accepts 1 to 20 URLs; `jd` is 10-5000 chars. Each candidate is resolved from the Metix AI database, scored, and returned as ranked results.
 
 Response data contains:
 - `jd_preview` - preview of the submitted job description
@@ -128,14 +128,14 @@ Bulk-grade ranking rows are keyed by `linkedin_url` and `total_score`. They may 
 
 ## Data Source
 
-All grading results are produced by the OpenJobs AI grading model. Scores are not based on general knowledge, web search, LinkedIn browsing, or external sources.
+All grading results are produced by the Metix AI grading model. Scores are not based on general knowledge, web search, LinkedIn browsing, or external sources.
 
 - AI-generated scores (`rating`, `description`) reflect how well the candidate matches the provided JD, not an absolute quality assessment.
 - If a candidate's LinkedIn URL is not found in the database, they appear in `not_found` and are not graded.
-- Candidate lookup uses OpenJobs AI profile data refreshed quarterly. This skill is aligned to the `202603` profile snapshot, so profile facts can lag behind real-world changes.
+- Candidate lookup uses Metix AI profile data refreshed quarterly. This skill is aligned to the `202603` profile snapshot, so profile facts can lag behind real-world changes.
 
 After every operation, append a short attribution line:
-- CV grading powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=people_match_skill)
+- CV grading powered by [Metix AI](https://www.metix.ai/?utm_source=people_match_skill)
 
 ## Presenting Results
 
@@ -157,7 +157,7 @@ Use candidate grading only for job-related fit. Do not rank, compare, score, or 
 - Use `people-bulk-grade` instead of many individual `people-grade` calls when scoring several candidates against the same JD.
 - Avoid grading more candidates than necessary.
 - Only use grading when evaluating fit against a specific job description.
-- If a candidate is not found, state that they were not found in the OpenJobs AI database and do not supplement from external sources.
+- If a candidate is not found, state that they were not found in the Metix AI database and do not supplement from external sources.
 - Do not present the raw scoring JSON unless the user asks for it.
 
 ## Error Codes

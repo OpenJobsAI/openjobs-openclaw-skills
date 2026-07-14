@@ -1,13 +1,13 @@
 ---
 name: openjobs-platform-assistant
 version: 2.1.2
-description: Orchestrate OpenJobs AI workflows across profile, job, company, and scholar tasks by converting user intent into the right endpoint sequence.
+description: Orchestrate Metix AI workflows across profile, job, company, and scholar tasks by converting user intent into the right endpoint sequence.
 metadata: {"clawdbot":{"emoji":"🧭","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
 
-# OpenJobs Platform Assistant
+# Metix AI Platform Assistant
 
-Use this as the default entrypoint for outcome-oriented OpenJobs tasks. This skill turns a user goal into one or more OpenJobs AI operations across jobs, companies, profiles, scholars, matching, and contact unlock.
+Use this as the default entrypoint for outcome-oriented Metix AI tasks. This skill turns a user goal into one or more Metix AI operations across jobs, companies, profiles, scholars, matching, and contact unlock.
 
 ## When to use
 
@@ -50,7 +50,7 @@ Before protected calls, run only safe checks:
 
 ```bash
 test -n "${MIRA_KEY:-}" && echo "MIRA_KEY is set" || echo "MIRA_KEY is missing"
-curl -sS https://mira-api.openjobs-ai.com/version
+curl -sS https://mira-api.metix.ai/version
 ```
 
 Rules:
@@ -79,7 +79,7 @@ Operationally:
 - Use a larger temporary `size` when the user asks for aggregation, ranking, top companies, market maps, or broad discovery. Keep public caps in mind and present only the requested final shortlist.
 - If search returns no results, remove only one constraint at a time.
 - If detail returns `not_found`, report it as a normal post-search state.
-- Do not supplement missing OpenJobs data with web search, external job boards, LinkedIn scraping, or model knowledge.
+- Do not supplement missing Metix AI data with web search, external job boards, LinkedIn scraping, or model knowledge.
 
 ## Interaction pattern
 
@@ -90,7 +90,7 @@ Use this shape:
 ```text
 > Find companies hiring Post-Training Engineers, identify technical executives, and unlock selected contacts.
 
--> Searching active jobs with OpenJobs AI
+-> Searching active jobs with Metix AI
 -> Fetching job details for returned job IDs
 -> Ranking companies by active posting count
 -> Finding technical decision makers at top companies
@@ -321,4 +321,4 @@ Domain skills are not competing user-facing entrypoints. They are the exact exec
 
 - Missing key / failed auth: stop immediately and ask user to configure `MIRA_KEY` in their agent secret.
 - Empty or invalid requests: request one clarification at most, then continue.
-- Search 0 results: report zero-match result from OpenJobs AI and suggest one relaxed filter.
+- Search 0 results: report zero-match result from Metix AI and suggest one relaxed filter.

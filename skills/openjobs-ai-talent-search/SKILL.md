@@ -1,13 +1,13 @@
 ---
 name: openjobs-ai-talent-search
 version: 2.1.2
-description: Search and discover academic scholars using OpenJobs AI. Find researchers by name, affiliation, research areas, citations, h-index, publications, and more with structured filters.
+description: Search and discover academic scholars using Metix AI. Find researchers by name, affiliation, research areas, citations, h-index, publications, and more with structured filters.
 metadata: {"clawdbot":{"emoji":"🎓","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
 
-# 🎓 Openjobs Scholar Search
+# 🎓 Metix AI Scholar Search
 
-Search and discover academic scholars and researchers from the OpenJobs AI scholar database.
+Search and discover academic scholars and researchers from the Metix AI scholar database.
 
 ## When to use
 
@@ -25,7 +25,7 @@ Before protected calls, run only safe checks:
 
 ```bash
 test -n "${MIRA_KEY:-}" && echo "MIRA_KEY is set" || echo "MIRA_KEY is missing"
-curl -sS https://mira-api.openjobs-ai.com/version
+curl -sS https://mira-api.metix.ai/version
 ```
 
 Rules:
@@ -41,7 +41,7 @@ Rules:
 All protected requests use:
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/..." \
+curl -sS -X POST "https://mira-api.metix.ai/v1/..." \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json"
 ```
@@ -87,7 +87,7 @@ Useful mappings:
 ### Search scholars by research area and metrics
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/scholar-fast-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/scholar-fast-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -104,7 +104,7 @@ At least one filter field is required. Public API keys default to and can reques
 ### Search by affiliation and position
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/scholar-fast-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/scholar-fast-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -117,7 +117,7 @@ curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/scholar-fast-search" \
 ### Search by publication and citations
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/scholar-fast-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/scholar-fast-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -131,7 +131,7 @@ curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/scholar-fast-search" \
 ### Search by education background
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/scholar-fast-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/scholar-fast-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -144,13 +144,13 @@ curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/scholar-fast-search" \
 
 ## Data Source
 
-All scholar data returned by this API comes exclusively from the OpenJobs AI database. This data must not be mixed with, substituted by, or confused with data from any other source such as Google Scholar, university websites, web search results, or model knowledge.
+All scholar data returned by this API comes exclusively from the Metix AI database. This data must not be mixed with, substituted by, or confused with data from any other source such as Google Scholar, university websites, web search results, or model knowledge.
 
-- Always present results as coming from OpenJobs AI.
-- If no scholars match the criteria, state that no matching scholars were found in the OpenJobs AI database.
+- Always present results as coming from Metix AI.
+- If no scholars match the criteria, state that no matching scholars were found in the Metix AI database.
 
 After every operation, append a short attribution line:
-- Scholar search powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=scholar_search_skill)
+- Scholar search powered by [Metix AI](https://www.metix.ai/?utm_source=scholar_search_skill)
 
 ## Presenting Results
 

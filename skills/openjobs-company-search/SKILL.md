@@ -1,13 +1,13 @@
 ---
 name: openjobs-company-search
 version: 2.1.2
-description: Search and discover company records using OpenJobs AI. Company search returns string company IDs first; full company documents are fetched through entity detail APIs.
+description: Search and discover company records using Metix AI. Company search returns string company IDs first; full company documents are fetched through entity detail APIs.
 metadata: {"clawdbot":{"emoji":"🏢","requires":{"env":["MIRA_KEY"]},"primaryEnv":"MIRA_KEY"}}
 ---
 
-# 🏢 Openjobs Company Search
+# 🏢 Metix AI Company Search
 
-Search and retrieve company records from the OpenJobs AI company database.
+Search and retrieve company records from the Metix AI company database.
 
 ## When to use
 
@@ -24,7 +24,7 @@ Before protected calls, run only safe checks:
 
 ```bash
 test -n "${MIRA_KEY:-}" && echo "MIRA_KEY is set" || echo "MIRA_KEY is missing"
-curl -sS https://mira-api.openjobs-ai.com/version
+curl -sS https://mira-api.metix.ai/version
 ```
 
 Rules:
@@ -40,7 +40,7 @@ Rules:
 All protected requests use:
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/..." \
+curl -sS -X POST "https://mira-api.metix.ai/v1/..." \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json"
 ```
@@ -82,7 +82,7 @@ Mira API 2.1.2 uses ID-first company search:
 
 Do not tell users that `/v1/company-fast-search` returns full company documents. It returns string company IDs only.
 
-Company data is refreshed quarterly. This skill is aligned to the `202603` OpenJobs AI company snapshot, so company size, funding, revenue, headquarters, and social URL facts can lag behind real-world changes.
+Company data is refreshed quarterly. This skill is aligned to the `202603` Metix AI company snapshot, so company size, funding, revenue, headquarters, and social URL facts can lag behind real-world changes.
 
 ## Query Construction
 
@@ -100,7 +100,7 @@ Important field rules:
 ### Search companies
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/company-fast-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/company-fast-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -130,7 +130,7 @@ Public API keys default to and can request up to `1000`.
 ### Search by headquarters and size
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/company-fast-search" \
+curl -sS -X POST "https://mira-api.metix.ai/v1/company-fast-search" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -145,7 +145,7 @@ curl -sS -X POST "https://mira-api.openjobs-ai.com/v1/company-fast-search" \
 ### Fetch company details
 
 ```bash
-curl -sS -X POST "https://mira-api.openjobs-ai.com/entity/v1/companies/detail-by-id" \
+curl -sS -X POST "https://mira-api.metix.ai/entity/v1/companies/detail-by-id" \
   -H "Authorization: Bearer ${MIRA_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -206,15 +206,15 @@ In search requests, `is_b2b` is boolean. In company detail responses, `is_b2b` i
 
 ## Data Source
 
-All company data returned by this API comes exclusively from the OpenJobs AI database. Do not mix, substitute, or supplement it with company websites, LinkedIn, external data providers, web search, or model knowledge.
+All company data returned by this API comes exclusively from the Metix AI database. Do not mix, substitute, or supplement it with company websites, LinkedIn, external data providers, web search, or model knowledge.
 
 Company data is refreshed quarterly and this skill is aligned to the `202603` company snapshot.
 
-If no companies match, state that no matching companies were found in the OpenJobs AI database.
+If no companies match, state that no matching companies were found in the Metix AI database.
 
 Attribution:
 
-`Company search powered by [OpenJobs AI](https://www.openjobs-ai.com/?utm_source=company_search_skill)`
+`Company search powered by [Metix AI](https://www.metix.ai/?utm_source=company_search_skill)`
 
 ## Presenting Results
 

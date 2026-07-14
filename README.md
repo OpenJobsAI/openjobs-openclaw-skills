@@ -1,8 +1,8 @@
-# OpenJobs AI OpenClaw Skills
+# Metix AI OpenClaw Skills
 
-OpenClaw skills for recruiting, talent sourcing, job search, company discovery, candidate matching, and academic researcher discovery, powered by [OpenJobs AI](https://www.openjobs-ai.com/).
+OpenClaw skills for recruiting, talent sourcing, job search, company discovery, candidate matching, and academic researcher discovery, powered by [Metix AI](https://www.metix.ai/).
 
-Built for **Mira API `2.1.2`** at `https://mira-api.openjobs-ai.com`.
+Built for **Mira API `2.1.2`** at `https://mira-api.metix.ai`.
 
 ## Install the Skills
 
@@ -22,7 +22,7 @@ mkdir -p "$HOME/.agents/skills"
 cp -R openjobs-openclaw-skills/skills/* "$HOME/.agents/skills/"
 ```
 
-Restart Codex if needed, then run `/skills` or type `$openjobs-people-search` to verify that the OpenJobs skills are available.
+Restart Codex if needed, then run `/skills` or type `$openjobs-people-search` to verify that the Metix AI skills are available.
 
 ### Claude Code
 
@@ -57,10 +57,10 @@ Install skills: OpenJobsAI/openjobs-openclaw-skills
 
 ## Quick Start
 
-1. Get a Mira API key from [platform.openjobs-ai.com](https://platform.openjobs-ai.com/).
+1. Get a Mira API key from [platform.metix.ai](https://platform.metix.ai/).
 2. Configure `MIRA_KEY` in the environment that starts your agent. See [Configure MIRA_KEY](#configure-mira_key).
 3. Restart the agent after changing environment variables or client secrets.
-4. Ask the agent to use one of the OpenJobs skills, for example:
+4. Ask the agent to use one of the Metix AI skills, for example:
 
 ```text
 Find US data engineers with Python, AWS, and startup experience.
@@ -190,8 +190,8 @@ There is no single OpenClaw-wide GUI setting. If your client has environment var
 After `MIRA_KEY` is present:
 
 ```bash
-curl -sS https://mira-api.openjobs-ai.com/version
-curl -sS "https://mira-api.openjobs-ai.com/auth/key/status" \
+curl -sS https://mira-api.metix.ai/version
+curl -sS "https://mira-api.metix.ai/auth/key/status" \
   -H "Authorization: Bearer ${MIRA_KEY}"
 ```
 
@@ -203,8 +203,8 @@ Mira API also exposes these capabilities over MCP:
 
 | Transport | URL | Protocol |
 |---|---|---|
-| Streamable HTTP | `https://mira-api.openjobs-ai.com/mcp` | MCP 2025-03-26 |
-| SSE legacy | `https://mira-api.openjobs-ai.com/sse` | MCP 2024-11-05 |
+| Streamable HTTP | `https://mira-api.metix.ai/mcp` | MCP 2025-03-26 |
+| SSE legacy | `https://mira-api.metix.ai/sse` | MCP 2024-11-05 |
 
 Example shape using an environment placeholder:
 
@@ -213,7 +213,7 @@ Example shape using an environment placeholder:
   "mcpServers": {
     "mira-api": {
       "type": "http",
-      "url": "https://mira-api.openjobs-ai.com/mcp",
+      "url": "https://mira-api.metix.ai/mcp",
       "headers": { "Authorization": "Bearer ${MIRA_KEY}" }
     }
   }
@@ -224,7 +224,7 @@ If your MCP client does not expand environment placeholders, configure the Autho
 
 ## Requirements
 
-- A Mira API key from [platform.openjobs-ai.com](https://platform.openjobs-ai.com/)
+- A Mira API key from [platform.metix.ai](https://platform.metix.ai/)
 - An agent/client environment that can provide `MIRA_KEY` without exposing it in chat
 
 ## License
